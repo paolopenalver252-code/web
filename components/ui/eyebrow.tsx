@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { LiveDot } from "@/components/ui/live-dot";
 
 export function Eyebrow({
   children,
@@ -16,12 +17,7 @@ export function Eyebrow({
         className
       )}
     >
-      {dot && (
-        <span className="relative flex size-1.5">
-          <span className="absolute inline-flex h-full w-full animate-pulse-soft rounded-full bg-accent-400" />
-          <span className="relative inline-flex size-1.5 rounded-full bg-accent-400" />
-        </span>
-      )}
+      {dot && <LiveDot />}
       {children}
     </span>
   );

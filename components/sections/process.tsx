@@ -5,9 +5,19 @@ import { Search, Layers, Cog, LineChart } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Glow } from "@/components/effects/glow";
+import { PulseConnector } from "@/components/ui/pulse-connector";
 import { revealUp, viewportOnce, SPRING_LIGHT, SPRING_MEDIUM, SPRING_HEAVY } from "@/lib/motion";
 import { useScene, useLayer } from "@/lib/parallax";
 import { cn } from "@/lib/utils";
+
+const iconActivate = {
+  dim: { borderColor: "var(--color-border)", boxShadow: "0 0 0 rgba(79,209,224,0)" },
+  active: {
+    borderColor: "var(--color-border-accent)",
+    boxShadow: "0 0 24px -6px rgba(79,209,224,0.5)",
+    transition: { duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] },
+  },
+};
 
 const STEPS = [
   {
@@ -87,9 +97,15 @@ export function Process() {
               </motion.span>
 
               <div className="relative flex flex-col gap-5 pt-20 md:pt-24">
-                <span className="flex size-12 items-center justify-center rounded-2xl border border-border bg-surface-900/60 text-accent-400">
+                <motion.span
+                  variants={iconActivate}
+                  initial="dim"
+                  whileInView="active"
+                  viewport={viewportOnce}
+                  className="flex size-12 items-center justify-center rounded-2xl border bg-surface-900/60 text-accent-400"
+                >
                   <step.icon className="size-5" />
-                </span>
+                </motion.span>
                 <h3 className="font-display text-[22px] text-fg">{step.title}</h3>
                 <p className="max-w-[30ch] text-[15px] leading-[1.75] text-fg-muted">
                   {step.text}
@@ -97,10 +113,9 @@ export function Process() {
               </div>
 
               {i < STEPS.length - 1 && (
-                <span
-                  aria-hidden
-                  className="absolute right-[-21px] top-[120px] hidden h-px w-10 bg-border md:block"
-                />
+                <div className="absolute right-[-25px] top-[112px] hidden md:block">
+                  <PulseConnector length={40} delay={i * 0.3} />
+                </div>
               )}
             </motion.div>
           ))}

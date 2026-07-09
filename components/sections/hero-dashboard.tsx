@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { CalendarCheck, TrendingUp, MapPin } from "lucide-react";
+import { LiveDot } from "@/components/ui/live-dot";
 
 const weeklyBars = [38, 52, 44, 61, 58, 74, 68];
 
@@ -28,6 +29,18 @@ export function HeroDashboard() {
           <p className="text-[12.5px] font-medium text-fg">Nueva reserva confirmada</p>
           <p className="font-mono text-[10.5px] text-fg-faint">Automatizada · hace 2 min</p>
         </div>
+
+        {/* the signal — this event is flowing down into the system below */}
+        <span
+          aria-hidden
+          className="absolute -bottom-7 left-8 h-7 w-px bg-gradient-to-b from-accent-400/70 to-transparent"
+        >
+          <motion.span
+            className="absolute left-1/2 size-1 -translate-x-1/2 rounded-full bg-accent-300"
+            animate={{ top: ["0%", "100%"], opacity: [0, 1, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeIn", delay: 2.2 }}
+          />
+        </span>
       </motion.div>
 
       {/* main dashboard panel */}
@@ -45,10 +58,7 @@ export function HeroDashboard() {
             <p className="mt-1 font-display text-[19px] text-fg">Clínica Vitalis</p>
           </div>
           <span className="flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-400">
-            <span className="relative flex size-1.5">
-              <span className="absolute inline-flex h-full w-full animate-pulse-soft rounded-full bg-accent-400" />
-              <span className="relative inline-flex size-1.5 rounded-full bg-accent-400" />
-            </span>
+            <LiveDot />
             En vivo
           </span>
         </div>

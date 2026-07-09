@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { Glow } from "@/components/effects/glow";
+import { LiveDot } from "@/components/ui/live-dot";
 import { revealUp, viewportOnce, SPRING_HEAVY } from "@/lib/motion";
 import { useScene, useLayer } from "@/lib/parallax";
 
@@ -44,15 +45,23 @@ function Stat({
 }) {
   return (
     <SpotlightCard className="bg-noise flex h-full flex-col justify-between gap-8 rounded-3xl p-8">
-      <span
-        className={
-          big
-            ? "text-gradient-accent font-mono text-[64px] leading-none tracking-tight md:text-[92px]"
-            : "text-gradient-fg font-mono text-[40px] leading-none tracking-tight"
-        }
-      >
-        {value}
-      </span>
+      <div className="flex flex-col gap-4">
+        {big && (
+          <span className="flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-fg-faint">
+            <LiveDot />
+            Sistema en vivo
+          </span>
+        )}
+        <span
+          className={
+            big
+              ? "text-gradient-accent font-mono text-[64px] leading-none tracking-tight md:text-[92px]"
+              : "text-gradient-fg font-mono text-[40px] leading-none tracking-tight"
+          }
+        >
+          {value}
+        </span>
+      </div>
       <div className="flex flex-col gap-2">
         <h3 className="text-[15px] font-medium text-fg">{title}</h3>
         <p className="max-w-[38ch] text-[14px] leading-[1.65] text-fg-muted">{text}</p>

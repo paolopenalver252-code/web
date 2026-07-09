@@ -54,15 +54,34 @@ export function Hero() {
           style={{ y: particleY }}
         />
         <motion.svg
-          className="animate-drift-slow absolute right-[6%] bottom-[10%] opacity-[0.35]"
+          className="animate-drift-slow absolute right-[6%] bottom-[10%] opacity-[0.55]"
           style={{ y: ringY }}
           width="140"
-          height="140"
-          viewBox="0 0 140 140"
+          height="120"
+          viewBox="0 0 140 120"
           fill="none"
         >
-          <circle cx="70" cy="70" r="69" stroke="var(--color-border-strong)" />
-          <circle cx="70" cy="70" r="46" stroke="var(--color-border-strong)" />
+          <path
+            d="M70 20 L115 100 L25 100 Z"
+            stroke="var(--color-border-strong)"
+            strokeWidth="1"
+          />
+          <motion.path
+            d="M70 20 L115 100 L25 100 Z"
+            stroke="var(--color-accent-400)"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeDasharray="18 256"
+            animate={{ strokeDashoffset: [0, -274] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+          />
+          {[
+            [70, 20],
+            [115, 100],
+            [25, 100],
+          ].map(([cx, cy]) => (
+            <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="3" fill="var(--color-accent-400)" />
+          ))}
         </motion.svg>
       </div>
 

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
+import { LiveDot } from "@/components/ui/live-dot";
 import { revealUp, revealScale, viewportOnce } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import type { ServiceLevel } from "@/lib/services";
@@ -126,10 +127,7 @@ function LevelGlyph({ n, featured }: { n: string; featured?: boolean }) {
           featured ? "text-accent-300 border-border-accent" : "text-fg-muted"
         )}
       >
-        <span className="relative flex size-1.5">
-          <span className="absolute inline-flex h-full w-full animate-pulse-soft rounded-full bg-accent-400" />
-          <span className="relative inline-flex size-1.5 rounded-full bg-accent-400" />
-        </span>
+        <LiveDot />
         Nivel {n}
       </span>
     </div>

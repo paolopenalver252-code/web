@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useSpring, useReducedMotion } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -42,6 +42,14 @@ export function ValueLadder() {
     railProgress,
     reduced ? { stiffness: 1000, damping: 100, mass: 0.1 } : SPRING_MEDIUM
   );
+
+  // Each node "wakes up" as the light reaches it — four fixed thresholds
+  // evenly spaced along the rail, one per level.
+  const active0 = useTransform(railProgress, [0.03, 0.14], [0, 1]);
+  const active1 = useTransform(railProgress, [0.28, 0.39], [0, 1]);
+  const active2 = useTransform(railProgress, [0.53, 0.64], [0, 1]);
+  const active3 = useTransform(railProgress, [0.78, 0.89], [0, 1]);
+  const activation = [active0, active1, active2, active3];
 
   return (
     <section id="sistema" className="relative overflow-hidden py-32 md:py-48">
@@ -92,6 +100,13 @@ export function ValueLadder() {
                   )}
                 >
                   {level.n}
+                  {!level.featured && (
+                    <motion.span
+                      aria-hidden
+                      style={{ opacity: activation[i] }}
+                      className="absolute inset-0 rounded-full border border-accent-400 shadow-[var(--shadow-glow-accent)]"
+                    />
+                  )}
                 </span>
               </div>
 
