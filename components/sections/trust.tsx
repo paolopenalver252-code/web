@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { Glow } from "@/components/effects/glow";
 import { revealUp, staggerContainer, viewportOnce } from "@/lib/motion";
 
 const CAPABILITIES = [
@@ -16,9 +17,12 @@ const CAPABILITIES = [
 
 export function Trust() {
   return (
-    <section className="relative py-28 md:py-40">
-      <Container className="flex flex-col gap-16 md:gap-20">
+    <section className="relative flex flex-col justify-center overflow-hidden py-32 md:py-48 lg:min-h-[135vh]">
+      <Glow position="center-right" size="xl" />
+      <Container className="flex flex-col gap-24 md:gap-32">
         <SectionHeading
+          layout="split"
+          size="lg"
           eyebrow="Por qué funciona"
           title="Especializados en un solo sector. Nunca dispersos."
           description="No trabajamos con restaurantes, inmobiliarias ni comercio electrónico. Solo con centros de bienestar, clínicas privadas y profesionales de la salud — y esa especialización es, precisamente, la razón por la que el sistema funciona."
@@ -29,7 +33,7 @@ export function Trust() {
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="flex flex-wrap gap-3"
+          className="flex flex-wrap gap-3 lg:ml-[10%]"
         >
           {CAPABILITIES.map((c) => (
             <motion.span
@@ -47,18 +51,14 @@ export function Trust() {
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="glass-panel bg-noise relative overflow-hidden rounded-[32px] px-8 py-14 md:px-16 md:py-20"
+          className="relative flex flex-col gap-8 lg:ml-[18%] lg:mt-8"
         >
-          <div
-            aria-hidden
-            className="absolute -left-20 -top-20 h-64 w-64 rounded-full opacity-20 blur-[100px]"
-            style={{ background: "radial-gradient(circle, var(--color-accent-500), transparent 70%)" }}
-          />
-          <p className="font-display relative max-w-[34ch] text-[26px] font-normal italic leading-[1.35] text-fg md:text-[34px]">
-            Un sistema de crecimiento no promete magia. Promete claridad: qué está
-            funcionando, qué no, y qué hacer a continuación.
+          <p className="font-display max-w-[26ch] text-[32px] font-normal italic leading-[1.2] text-fg sm:text-[40px] md:text-[50px]">
+            Un sistema de crecimiento no promete magia. Promete claridad: qué
+            está funcionando, qué no, y qué hacer a continuación.
           </p>
-          <footer className="relative mt-8 font-mono text-[12px] uppercase tracking-[0.16em] text-fg-faint">
+          <footer className="flex items-center gap-4 font-mono text-[12px] uppercase tracking-[0.16em] text-fg-faint">
+            <span className="h-px w-10 bg-border" />
             — Equipo POTENARIS
           </footer>
         </motion.blockquote>

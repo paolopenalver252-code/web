@@ -18,7 +18,7 @@ export function PageHero({
   align?: "left" | "center";
 }) {
   return (
-    <section className="relative overflow-hidden pt-40 pb-20 md:pt-48 md:pb-28">
+    <section className="relative flex min-h-[74vh] flex-col justify-end overflow-hidden pt-40 pb-24 md:pb-32">
       <AmbientBackground variant="hero" />
       <Container>
         <motion.div
@@ -27,8 +27,8 @@ export function PageHero({
           animate="visible"
           className={
             align === "center"
-              ? "mx-auto flex max-w-[760px] flex-col items-center gap-6 text-center"
-              : "flex max-w-[680px] flex-col items-start gap-6"
+              ? "mx-auto flex max-w-[820px] flex-col items-center gap-7 text-center"
+              : "flex max-w-[720px] flex-col items-start gap-7"
           }
         >
           <motion.div variants={revealUp()}>
@@ -36,14 +36,14 @@ export function PageHero({
           </motion.div>
           <motion.h1
             variants={revealUp()}
-            className="font-display text-[38px] font-normal leading-[1.08] text-fg sm:text-[48px] md:text-[56px]"
+            className="font-display max-w-[15ch] text-[44px] font-normal leading-[1.0] text-fg sm:text-[60px] md:text-[76px]"
           >
             {title}
           </motion.h1>
           {description && (
             <motion.p
               variants={revealUp()}
-              className="max-w-[54ch] text-[17px] leading-[1.7] text-fg-muted"
+              className="max-w-[44ch] text-[17px] leading-[1.75] text-fg-muted"
             >
               {description}
             </motion.p>

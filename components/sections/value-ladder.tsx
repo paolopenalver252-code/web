@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Button } from "@/components/ui/button";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
+import { Glow } from "@/components/effects/glow";
 import { revealUp, staggerContainer, viewportOnce } from "@/lib/motion";
 import { SERVICE_LEVELS } from "@/lib/services";
 import { cn } from "@/lib/utils";
@@ -31,9 +32,12 @@ function CardOrPlain({
 
 export function ValueLadder() {
   return (
-    <section id="sistema" className="relative py-28 md:py-40">
-      <Container className="flex flex-col gap-16 md:gap-24">
+    <section id="sistema" className="relative overflow-hidden py-32 md:py-48">
+      <Glow position="top-right" size="lg" />
+      <Container className="flex flex-col gap-20 md:gap-28">
         <SectionHeading
+          layout="split"
+          size="lg"
           eyebrow="El sistema de cuatro niveles"
           title="Empiece pequeño. Vea resultados. Escale con confianza."
           description="Cada nivel resuelve un problema concreto y prepara el terreno para el siguiente. No son servicios sueltos: son los pasos de un mismo sistema de crecimiento."
@@ -55,8 +59,9 @@ export function ValueLadder() {
               whileInView="visible"
               viewport={viewportOnce}
               className={cn(
-                "relative grid grid-cols-1 gap-6 py-10 md:grid-cols-[40px_1fr] md:gap-10 md:py-12",
-                i !== SERVICE_LEVELS.length - 1 && "border-b border-border"
+                "relative grid grid-cols-1 gap-6 py-12 transition-colors duration-500 md:grid-cols-[40px_1fr] md:gap-10 md:py-16",
+                i !== SERVICE_LEVELS.length - 1 && "border-b border-border",
+                !level.featured && "hover:bg-surface-900/20"
               )}
             >
               <div className="hidden md:block">
@@ -81,7 +86,7 @@ export function ValueLadder() {
                   <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent-400">
                     {level.tag}
                   </span>
-                  <h3 className="font-display text-[26px] leading-tight text-fg md:text-[30px]">
+                  <h3 className="font-display text-[28px] leading-[1.08] text-fg md:text-[36px]">
                     {level.name}
                   </h3>
                   <p className="max-w-[42ch] text-[15.5px] leading-[1.7] text-fg-muted">

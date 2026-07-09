@@ -14,9 +14,9 @@ export function ServiceDetail({ level, index }: { level: ServiceLevel; index: nu
   return (
     <section
       id={level.id}
-      className="relative scroll-mt-28 border-t border-border py-24 md:py-32"
+      className="relative scroll-mt-28 overflow-hidden border-t border-border py-28 md:py-40"
     >
-      <Container className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-20">
+      <Container className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-24">
         <motion.div
           variants={revealUp()}
           initial="hidden"
@@ -40,11 +40,11 @@ export function ServiceDetail({ level, index }: { level: ServiceLevel; index: nu
             </span>
           </div>
 
-          <h2 className="font-display text-[32px] leading-[1.1] text-fg md:text-[40px]">
+          <h2 className="font-display max-w-[13ch] text-[36px] leading-[1.04] text-fg md:text-[50px]">
             {level.name}
           </h2>
 
-          <p className="max-w-[46ch] text-[17px] leading-[1.7] text-fg-muted">{level.goal}</p>
+          <p className="max-w-[42ch] text-[17px] leading-[1.75] text-fg-muted">{level.goal}</p>
 
           <div className="flex items-baseline gap-1.5">
             <span className="font-mono text-[26px] text-fg">{level.priceRange}</span>
@@ -53,11 +53,13 @@ export function ServiceDetail({ level, index }: { level: ServiceLevel; index: nu
             )}
           </div>
 
-          <div className="rounded-2xl border border-border bg-surface-900/40 p-5">
+          <div className="border-l border-border-accent/40 pl-5">
             <p className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-fg-faint">
               Ideal si
             </p>
-            <p className="mt-2 text-[14.5px] leading-[1.65] text-fg-muted">{level.forWhom}</p>
+            <p className="mt-2 max-w-[38ch] text-[14.5px] leading-[1.7] text-fg-muted">
+              {level.forWhom}
+            </p>
           </div>
 
           <ul className="flex flex-col gap-3.5">
@@ -115,7 +117,7 @@ function LevelGlyph({ n, featured }: { n: string; featured?: boolean }) {
           opacity={featured ? 0.7 : 0.35}
         />
       </svg>
-      <span className="font-display pointer-events-none absolute select-none text-[180px] leading-none text-transparent [-webkit-text-stroke:1.5px_var(--color-border-strong)] md:text-[220px]">
+      <span className="font-display pointer-events-none absolute select-none text-[200px] leading-none text-transparent [-webkit-text-stroke:1.5px_var(--color-border-strong)] md:text-[260px]">
         {n}
       </span>
       <span

@@ -5,6 +5,7 @@ import { Repeat2, HeartHandshake } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
+import { Glow } from "@/components/effects/glow";
 import { revealUp, viewportOnce } from "@/lib/motion";
 
 function StatText({
@@ -45,8 +46,8 @@ function Stat({
       <span
         className={
           big
-            ? "text-gradient-accent font-mono text-[56px] leading-none tracking-tight md:text-[68px]"
-            : "text-gradient-fg font-mono text-[38px] leading-none tracking-tight"
+            ? "text-gradient-accent font-mono text-[64px] leading-none tracking-tight md:text-[92px]"
+            : "text-gradient-fg font-mono text-[40px] leading-none tracking-tight"
         }
       >
         {value}
@@ -61,9 +62,12 @@ function Stat({
 
 export function Results() {
   return (
-    <section id="resultados" className="relative py-28 md:py-40">
-      <Container className="flex flex-col gap-16 md:gap-20">
+    <section id="resultados" className="relative overflow-hidden py-32 md:py-48">
+      <Glow position="top-left" size="lg" />
+      <Container className="flex flex-col gap-20 md:gap-24">
         <SectionHeading
+          layout="split"
+          size="lg"
           eyebrow="Lo que cambia"
           title="No vendemos marketing. Entregamos resultados medibles."
           description="Cada nivel del sistema está diseñado para producir un efecto concreto en el negocio, no solo una mejora estética en su presencia digital."

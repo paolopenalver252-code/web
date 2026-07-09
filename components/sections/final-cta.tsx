@@ -9,7 +9,7 @@ import { staggerContainer, revealUp, viewportOnce } from "@/lib/motion";
 
 export function FinalCta() {
   return (
-    <section className="relative overflow-hidden py-32 md:py-44">
+    <section className="relative flex flex-col justify-center overflow-hidden py-40 md:py-56 lg:min-h-[100vh]">
       <AmbientBackground />
       <Container>
         <motion.div
@@ -17,7 +17,7 @@ export function FinalCta() {
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="mx-auto flex max-w-[720px] flex-col items-center gap-7 text-center"
+          className="mx-auto flex max-w-[760px] flex-col items-center gap-8 text-center"
         >
           <motion.div variants={revealUp()}>
             <Eyebrow>El siguiente paso</Eyebrow>
@@ -25,7 +25,7 @@ export function FinalCta() {
 
           <motion.h2
             variants={revealUp()}
-            className="font-display text-[38px] font-normal leading-[1.1] text-fg sm:text-[48px] md:text-[56px]"
+            className="font-display max-w-[16ch] text-[42px] font-normal leading-[1.03] text-fg sm:text-[58px] md:text-[72px]"
           >
             Deje de esperar a que el boca a boca haga su trabajo.
           </motion.h2>

@@ -3,13 +3,16 @@
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { Glow } from "@/components/effects/glow";
 import { revealUp, viewportOnce } from "@/lib/motion";
 
 export function AboutNiche() {
   return (
-    <section className="relative border-t border-border py-28 md:py-40">
+    <section className="relative overflow-hidden border-t border-border py-32 md:py-48">
+      <Glow position="top-left" size="md" tone="faint" />
       <Container className="grid grid-cols-1 gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
         <SectionHeading
+          size="lg"
           eyebrow="Por qué un solo sector"
           title="La especialización no es una limitación. Es la ventaja."
         />

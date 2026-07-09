@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { X, Check } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { Glow } from "@/components/effects/glow";
 import { revealUp, staggerContainer, viewportOnce } from "@/lib/motion";
 
 const NOT = [
@@ -20,21 +21,24 @@ const ARE = [
 
 export function AboutPositioning() {
   return (
-    <section className="relative py-28 md:py-40">
-      <Container className="flex flex-col gap-16">
+    <section className="relative overflow-hidden py-32 md:py-48">
+      <Glow position="top-right" size="lg" tone="faint" />
+      <Container className="flex flex-col gap-20 md:gap-28">
         <SectionHeading
+          layout="split"
+          size="lg"
           eyebrow="Posicionamiento"
           title="Lo que no hacemos, a propósito."
           description="La claridad sobre lo que no somos es la mejor forma de entender lo que sí somos."
         />
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
+        <div className="grid grid-cols-1 gap-14 md:grid-cols-2 md:gap-10">
           <motion.div
             variants={staggerContainer(0.08)}
             initial="hidden"
             whileInView="visible"
             viewport={viewportOnce}
-            className="flex flex-col gap-5 rounded-3xl border border-border p-8 md:p-10"
+            className="flex flex-col gap-7 border-t border-border pt-8"
           >
             <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-fg-faint">
               No somos
@@ -42,7 +46,7 @@ export function AboutPositioning() {
             {NOT.map((item) => (
               <motion.div key={item} variants={revealUp()} className="flex items-start gap-3">
                 <X className="mt-0.5 size-4 shrink-0 text-fg-faint" />
-                <p className="text-[15.5px] leading-[1.65] text-fg-muted">{item}</p>
+                <p className="max-w-[34ch] text-[16px] leading-[1.7] text-fg-muted">{item}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -52,7 +56,7 @@ export function AboutPositioning() {
             initial="hidden"
             whileInView="visible"
             viewport={viewportOnce}
-            className="glass-panel bg-noise flex flex-col gap-5 rounded-3xl p-8 md:p-10"
+            className="glass-panel bg-noise flex flex-col gap-7 rounded-[28px] p-9 md:mt-14 md:p-11"
           >
             <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent-400">
               Somos
@@ -60,7 +64,7 @@ export function AboutPositioning() {
             {ARE.map((item) => (
               <motion.div key={item} variants={revealUp()} className="flex items-start gap-3">
                 <Check className="mt-0.5 size-4 shrink-0 text-accent-400" />
-                <p className="text-[15.5px] leading-[1.65] text-fg">{item}</p>
+                <p className="max-w-[34ch] text-[16px] leading-[1.7] text-fg">{item}</p>
               </motion.div>
             ))}
           </motion.div>

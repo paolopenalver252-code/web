@@ -27,7 +27,7 @@ export function Hero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[100svh] items-center overflow-hidden pt-32 pb-20 md:pt-40"
+      className="relative flex min-h-[100svh] items-center pt-36 pb-24 md:pt-44 md:pb-16"
     >
       <AmbientBackground variant="hero" />
 
@@ -50,13 +50,13 @@ export function Hero() {
         </svg>
       </div>
 
-      <Container className="relative grid grid-cols-1 items-center gap-16 lg:grid-cols-[0.9fr_1fr] lg:gap-8">
+      <Container className="relative grid grid-cols-1 items-center gap-20 lg:grid-cols-[1fr_0.92fr] lg:gap-6">
         <motion.div
           style={{ y: textY, opacity: fade }}
           variants={staggerContainer(0.12, 0.1)}
           initial="hidden"
           animate="visible"
-          className="flex flex-col items-start gap-7"
+          className="flex flex-col items-start gap-8"
         >
           <motion.div variants={revealUp()}>
             <Eyebrow>Para clínicas y centros de bienestar</Eyebrow>
@@ -64,7 +64,7 @@ export function Hero() {
 
           <motion.h1
             variants={revealUp()}
-            className="font-display text-[42px] font-normal leading-[1.06] tracking-[-0.01em] text-fg sm:text-[54px] lg:text-[60px]"
+            className="font-display max-w-[13ch] text-[50px] font-normal leading-[0.98] tracking-[-0.015em] text-fg sm:text-[68px] lg:text-[76px] xl:text-[88px]"
           >
             El sistema que{" "}
             <span className="text-gradient-accent font-normal italic">
@@ -75,7 +75,7 @@ export function Hero() {
 
           <motion.p
             variants={revealUp()}
-            className="max-w-[46ch] text-[17px] leading-[1.7] text-fg-muted lg:text-[18px]"
+            className="max-w-[40ch] text-[17px] leading-[1.75] text-fg-muted lg:text-[18px]"
           >
             Visibilidad local, automatización de reservas y reputación digital,
             combinadas en un solo sistema que trabaja mientras usted atiende a sus
@@ -108,7 +108,7 @@ export function Hero() {
           style={{ y: visualY }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 1, delay: 0.6, ease: EASE_SIGNATURE } }}
-          className="relative flex justify-center lg:justify-end"
+          className="relative flex justify-center lg:justify-end lg:translate-x-4 xl:translate-x-12 2xl:translate-x-20"
         >
           <HeroDashboard />
         </motion.div>

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Search, Clock, Star, Users, TrendingDown } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { Glow } from "@/components/effects/glow";
 import { staggerContainer, revealUp, viewportOnce } from "@/lib/motion";
 
 const SYMPTOMS = [
@@ -36,12 +37,16 @@ const SYMPTOMS = [
 
 export function Problem() {
   return (
-    <section className="relative py-28 md:py-40">
-      <Container className="flex flex-col gap-16 md:gap-20">
+    <section className="relative flex flex-col justify-center overflow-hidden py-32 md:py-44 lg:min-h-[115vh]">
+      <Glow position="center-left" size="lg" tone="faint" />
+      <Container className="flex flex-col gap-20 md:gap-28">
         <SectionHeading
+          layout="split"
           eyebrow="¿Le suena familiar?"
+          size="lg"
           title="Cinco síntomas de una clínica sin sistema de crecimiento."
           description="No es falta de esfuerzo. Es que la visibilidad, las reservas y la reputación funcionan por separado, en lugar de trabajar como un solo sistema."
+          className="lg:pr-[8%]"
         />
 
         <motion.div
@@ -49,20 +54,23 @@ export function Problem() {
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="flex flex-col"
+          className="flex flex-col lg:ml-[10%]"
         >
           {SYMPTOMS.map((s, i) => (
             <motion.div
               key={s.n}
               variants={revealUp()}
-              className="group grid grid-cols-[auto_1fr_auto] items-center gap-6 border-t border-border py-7 transition-colors duration-500 hover:bg-surface-900/30 md:gap-10 md:py-8"
+              className="group relative grid grid-cols-[auto_1fr_auto] items-center gap-6 border-t border-border py-8 transition-colors duration-500 hover:bg-surface-900/30 md:gap-10 md:py-10"
             >
-              <span className="font-mono text-[13px] text-fg-faint">{s.n}</span>
+              <span className="font-display absolute -left-1 top-1/2 hidden -translate-y-1/2 select-none text-[64px] leading-none text-transparent opacity-0 transition-opacity duration-500 [-webkit-text-stroke:1px_var(--color-border-strong)] group-hover:opacity-100 lg:-left-20 lg:block">
+                {s.n}
+              </span>
+              <span className="font-mono text-[13px] text-fg-faint lg:hidden">{s.n}</span>
               <p
                 className={
                   i === 0
-                    ? "font-display text-[22px] leading-snug text-fg md:text-[28px]"
-                    : "text-[17px] leading-snug text-fg-muted md:text-[19px]"
+                    ? "font-display text-[24px] leading-[1.2] text-fg md:text-[32px]"
+                    : "text-[18px] leading-[1.3] text-fg-muted md:text-[21px]"
                 }
               >
                 {s.text}
@@ -78,7 +86,7 @@ export function Problem() {
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="max-w-[52ch] font-display text-[22px] italic leading-snug text-fg-muted md:text-[26px]"
+          className="font-display max-w-[26ch] text-[26px] italic leading-[1.25] text-fg-muted md:text-[34px] lg:ml-[10%]"
         >
           Si algo de esto le resulta familiar, no le falta esfuerzo.
           <span className="text-fg"> Le falta un sistema.</span>
