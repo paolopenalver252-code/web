@@ -16,13 +16,18 @@ export function Navbar() {
   const { scrollY } = useScroll();
   const pathname = usePathname();
 
+  // Close the mobile menu when the route changes — adjusted during render
+  // (React's documented pattern for derived-state resets) rather than in an
+  // effect, so it never causes an extra committed render.
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setOpen(false);
+  }
+
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 32);
   });
-
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";

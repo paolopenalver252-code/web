@@ -1,21 +1,28 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { Search, Layers, Cog, LineChart } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Glow } from "@/components/effects/glow";
 import { PulseConnector } from "@/components/ui/pulse-connector";
-import { revealUp, viewportOnce, SPRING_LIGHT, SPRING_MEDIUM, SPRING_HEAVY } from "@/lib/motion";
+import {
+  revealUp,
+  viewportOnce,
+  SPRING_LIGHT,
+  SPRING_MEDIUM,
+  SPRING_HEAVY,
+  EASE_SIGNATURE,
+} from "@/lib/motion";
 import { useScene, useLayer } from "@/lib/parallax";
 import { cn } from "@/lib/utils";
 
-const iconActivate = {
+const iconActivate: Variants = {
   dim: { borderColor: "var(--color-border)", boxShadow: "0 0 0 rgba(79,209,224,0)" },
   active: {
     borderColor: "var(--color-border-accent)",
     boxShadow: "0 0 24px -6px rgba(79,209,224,0.5)",
-    transition: { duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.9, delay: 0.3, ease: EASE_SIGNATURE },
   },
 };
 
