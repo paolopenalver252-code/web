@@ -26,7 +26,7 @@ const columns = [
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-border">
+    <footer className="relative z-10 border-t border-border">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-60"

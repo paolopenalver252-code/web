@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Glow } from "@/components/effects/glow";
-import { revealUp, staggerContainer, viewportOnce } from "@/lib/motion";
+import { revealUp, staggerContainer, viewportOnce, SPRING_HEAVY } from "@/lib/motion";
+import { useScene, useLayer } from "@/lib/parallax";
 
 const CAPABILITIES = [
   "SEO local sanitario",
@@ -16,9 +17,17 @@ const CAPABILITIES = [
 ];
 
 export function Trust() {
+  const { ref, progress } = useScene<HTMLElement>();
+  const glowY = useLayer(progress, 140, SPRING_HEAVY);
+
   return (
-    <section className="relative flex flex-col justify-center overflow-hidden py-32 md:py-48 lg:min-h-[135vh]">
-      <Glow position="center-right" size="xl" />
+    <section
+      ref={ref}
+      className="relative flex flex-col justify-center overflow-hidden py-32 md:py-48 lg:min-h-[135vh]"
+    >
+      <motion.div style={{ y: glowY }}>
+        <Glow position="center-right" size="xl" />
+      </motion.div>
       <Container className="flex flex-col gap-24 md:gap-32">
         <SectionHeading
           layout="split"

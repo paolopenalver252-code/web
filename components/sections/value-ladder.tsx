@@ -1,15 +1,16 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useSpring, useReducedMotion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Button } from "@/components/ui/button";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { Glow } from "@/components/effects/glow";
-import { revealUp, staggerContainer, viewportOnce } from "@/lib/motion";
+import { revealUp, staggerContainer, viewportOnce, SPRING_MEDIUM } from "@/lib/motion";
 import { SERVICE_LEVELS } from "@/lib/services";
 import { cn } from "@/lib/utils";
+import { useRef } from "react";
 
 function CardOrPlain({
   featured,
@@ -31,6 +32,17 @@ function CardOrPlain({
 }
 
 export function ValueLadder() {
+  const railRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: railProgress } = useScroll({
+    target: railRef,
+    offset: ["start center", "end center"],
+  });
+  const reduced = useReducedMotion();
+  const railFill = useSpring(
+    railProgress,
+    reduced ? { stiffness: 1000, damping: 100, mass: 0.1 } : SPRING_MEDIUM
+  );
+
   return (
     <section id="sistema" className="relative overflow-hidden py-32 md:py-48">
       <Glow position="top-right" size="lg" />
@@ -43,11 +55,17 @@ export function ValueLadder() {
           description="Cada nivel resuelve un problema concreto y prepara el terreno para el siguiente. No son servicios sueltos: son los pasos de un mismo sistema de crecimiento."
         />
 
-        <div className="relative flex flex-col">
-          {/* connecting rail */}
+        <div ref={railRef} className="relative flex flex-col">
+          {/* connecting rail — the track */}
           <div
             aria-hidden
-            className="absolute left-[19px] top-3 bottom-3 hidden w-px bg-gradient-to-b from-accent-500/50 via-border to-transparent md:block"
+            className="absolute left-[19px] top-3 bottom-3 hidden w-px bg-border md:block"
+          />
+          {/* the light that travels down it as you scroll through the system */}
+          <motion.div
+            aria-hidden
+            style={{ scaleY: railFill }}
+            className="absolute left-[19px] top-3 bottom-3 hidden w-px origin-top bg-gradient-to-b from-accent-400 to-accent-600 shadow-[0_0_12px_rgba(79,209,224,0.6)] md:block"
           />
 
           {SERVICE_LEVELS.map((level, i) => (

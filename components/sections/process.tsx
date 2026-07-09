@@ -5,7 +5,8 @@ import { Search, Layers, Cog, LineChart } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Glow } from "@/components/effects/glow";
-import { revealUp, viewportOnce } from "@/lib/motion";
+import { revealUp, viewportOnce, SPRING_LIGHT, SPRING_MEDIUM, SPRING_HEAVY } from "@/lib/motion";
+import { useScene, useLayer } from "@/lib/parallax";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
@@ -40,8 +41,19 @@ const STEPS = [
 ];
 
 export function Process() {
+  const { ref, progress } = useScene<HTMLElement>();
+
+  // Each ghost numeral drifts at its own speed — literal slow/medium/fast
+  // depth layers, so the columns never feel like one flat plane.
+  const depth0 = useLayer(progress, 30, SPRING_LIGHT);
+  const depth1 = useLayer(progress, 90, SPRING_HEAVY);
+  const depth2 = useLayer(progress, 55, SPRING_MEDIUM);
+  const depth3 = useLayer(progress, 110, SPRING_HEAVY);
+  const depths = [depth0, depth1, depth2, depth3];
+
   return (
     <section
+      ref={ref}
       id="proceso"
       className="relative flex flex-col justify-center overflow-hidden py-32 md:py-44 lg:min-h-[100vh]"
     >
@@ -66,12 +78,13 @@ export function Process() {
               viewport={viewportOnce}
               className={cn("relative flex flex-col gap-6", step.offset)}
             >
-              <span
+              <motion.span
                 aria-hidden
+                style={{ y: depths[i] }}
                 className="font-display pointer-events-none absolute -top-16 -left-2 select-none text-[128px] leading-none text-transparent opacity-80 [-webkit-text-stroke:1px_var(--color-border-strong)] md:text-[150px]"
               >
                 {step.n}
-              </span>
+              </motion.span>
 
               <div className="relative flex flex-col gap-5 pt-20 md:pt-24">
                 <span className="flex size-12 items-center justify-center rounded-2xl border border-border bg-surface-900/60 text-accent-400">

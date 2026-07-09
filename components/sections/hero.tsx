@@ -7,7 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Container } from "@/components/ui/container";
 import { HeroDashboard } from "@/components/sections/hero-dashboard";
-import { staggerContainer, revealUp, EASE_SIGNATURE } from "@/lib/motion";
+import {
+  staggerContainer,
+  revealUp,
+  EASE_SIGNATURE,
+  SPRING_HEAVY,
+  SPRING_MEDIUM,
+  SPRING_LIGHT,
+} from "@/lib/motion";
+import { useScrollDrift } from "@/lib/parallax";
 
 const TRUST = [
   { value: "6 años", label: "en marketing sanitario" },
@@ -20,8 +28,12 @@ export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
 
-  const visualY = useTransform(scrollYProgress, [0, 1], [0, 90]);
-  const textY = useTransform(scrollYProgress, [0, 1], [0, 40]);
+  // Depth layers separate by weight: the dashboard is heaviest (lags most),
+  // text is medium, tiny particles are lightest and react fastest.
+  const visualY = useScrollDrift(scrollYProgress, [0, 110], SPRING_HEAVY);
+  const textY = useScrollDrift(scrollYProgress, [0, 40], SPRING_MEDIUM);
+  const particleY = useScrollDrift(scrollYProgress, [0, -60], SPRING_LIGHT);
+  const ringY = useScrollDrift(scrollYProgress, [0, 70], SPRING_HEAVY);
   const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
@@ -35,11 +47,15 @@ export function Hero() {
       <div aria-hidden className="pointer-events-none absolute inset-0 hidden md:block">
         <motion.div
           className="animate-drift absolute left-[2.5%] top-[16%] size-2 rounded-full bg-accent-400/50 blur-[1px]"
-          style={{ y: textY }}
+          style={{ y: particleY }}
         />
-        <motion.div className="animate-drift-slow absolute left-[1.5%] bottom-[14%] size-1.5 rounded-full bg-accent-300/40 blur-[1px]" />
-        <svg
+        <motion.div
+          className="animate-drift-slow absolute left-[1.5%] bottom-[14%] size-1.5 rounded-full bg-accent-300/40 blur-[1px]"
+          style={{ y: particleY }}
+        />
+        <motion.svg
           className="animate-drift-slow absolute right-[6%] bottom-[10%] opacity-[0.35]"
+          style={{ y: ringY }}
           width="140"
           height="140"
           viewBox="0 0 140 140"
@@ -47,7 +63,7 @@ export function Hero() {
         >
           <circle cx="70" cy="70" r="69" stroke="var(--color-border-strong)" />
           <circle cx="70" cy="70" r="46" stroke="var(--color-border-strong)" />
-        </svg>
+        </motion.svg>
       </div>
 
       <Container className="relative grid grid-cols-1 items-center gap-20 lg:grid-cols-[1fr_0.92fr] lg:gap-6">

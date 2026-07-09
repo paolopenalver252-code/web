@@ -6,7 +6,8 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { Glow } from "@/components/effects/glow";
-import { revealUp, viewportOnce } from "@/lib/motion";
+import { revealUp, viewportOnce, SPRING_HEAVY } from "@/lib/motion";
+import { useScene, useLayer } from "@/lib/parallax";
 
 function StatText({
   icon: Icon,
@@ -61,9 +62,18 @@ function Stat({
 }
 
 export function Results() {
+  const { ref, progress } = useScene<HTMLElement>();
+  const glowY = useLayer(progress, 100, SPRING_HEAVY);
+
   return (
-    <section id="resultados" className="relative overflow-hidden py-32 md:py-48">
-      <Glow position="top-left" size="lg" />
+    <section
+      ref={ref}
+      id="resultados"
+      className="relative overflow-hidden py-32 md:py-48"
+    >
+      <motion.div style={{ y: glowY }}>
+        <Glow position="top-left" size="lg" />
+      </motion.div>
       <Container className="flex flex-col gap-20 md:gap-24">
         <SectionHeading
           layout="split"

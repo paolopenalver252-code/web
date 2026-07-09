@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { revealUp, viewportOnce } from "@/lib/motion";
+import { revealUp, revealCamera, viewportOnce } from "@/lib/motion";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +45,7 @@ export function SectionHeading({
             </motion.div>
           )}
           <motion.h2
-            variants={revealUp(0.08)}
+            variants={revealCamera(0.08)}
             initial="hidden"
             whileInView="visible"
             viewport={viewportOnce}
@@ -92,7 +92,7 @@ export function SectionHeading({
         </motion.div>
       )}
       <motion.h2
-        variants={revealUp(0.08)}
+        variants={revealCamera(0.08)}
         initial="hidden"
         whileInView="visible"
         viewport={viewportOnce}

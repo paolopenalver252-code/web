@@ -5,7 +5,8 @@ import { Search, Clock, Star, Users, TrendingDown } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Glow } from "@/components/effects/glow";
-import { staggerContainer, revealUp, viewportOnce } from "@/lib/motion";
+import { staggerContainer, revealUp, viewportOnce, SPRING_HEAVY } from "@/lib/motion";
+import { useScene, useLayer } from "@/lib/parallax";
 
 const SYMPTOMS = [
   {
@@ -36,9 +37,17 @@ const SYMPTOMS = [
 ];
 
 export function Problem() {
+  const { ref, progress } = useScene<HTMLElement>();
+  const glowY = useLayer(progress, 90, SPRING_HEAVY);
+
   return (
-    <section className="relative flex flex-col justify-center overflow-hidden py-32 md:py-44 lg:min-h-[115vh]">
-      <Glow position="center-left" size="lg" tone="faint" />
+    <section
+      ref={ref}
+      className="relative flex flex-col justify-center overflow-hidden py-32 md:py-44 lg:min-h-[115vh]"
+    >
+      <motion.div style={{ y: glowY }}>
+        <Glow position="center-left" size="lg" tone="faint" />
+      </motion.div>
       <Container className="flex flex-col gap-20 md:gap-28">
         <SectionHeading
           layout="split"

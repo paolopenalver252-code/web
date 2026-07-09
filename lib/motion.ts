@@ -50,6 +50,22 @@ export const revealScale = (delay = 0): Variants => ({
   },
 });
 
+/** A subtle camera "push in" — used for headings, so scenes feel entered, not pasted. */
+export const revealCamera = (delay = 0): Variants => ({
+  hidden: { opacity: 0, y: 20, scale: 0.985, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: {
+      duration: durations.slow,
+      delay,
+      ease: EASE_SIGNATURE,
+    } satisfies Transition,
+  },
+});
+
 export const staggerContainer = (stagger = 0.09, delayChildren = 0): Variants => ({
   hidden: {},
   visible: {
@@ -61,3 +77,12 @@ export const staggerContainer = (stagger = 0.09, delayChildren = 0): Variants =>
 });
 
 export const viewportOnce = { once: true, margin: "-10% 0px -10% 0px" } as const;
+
+/**
+ * Spring weight classes — heavier objects lag more and settle slower.
+ * Used to give scroll-linked parallax a sense of physical inertia
+ * instead of moving in lockstep with the raw scroll value.
+ */
+export const SPRING_HEAVY = { stiffness: 55, damping: 20, mass: 1.4 } as const;
+export const SPRING_MEDIUM = { stiffness: 90, damping: 22, mass: 1 } as const;
+export const SPRING_LIGHT = { stiffness: 140, damping: 24, mass: 0.6 } as const;
