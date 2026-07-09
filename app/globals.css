@@ -73,6 +73,9 @@
   --animate-breathe: breathe 7s ease-in-out infinite;
   --animate-pulse-soft: pulse-soft 5s ease-in-out infinite;
   --animate-marquee: marquee 34s linear infinite;
+  --animate-hero-breathe: hero-breathe 13s ease-in-out infinite;
+  --animate-hero-breathe-slow: hero-breathe 19s ease-in-out infinite;
+  --animate-hero-grain: hero-grain-drift 24s ease-in-out infinite;
 }
 
 * {
@@ -184,6 +187,17 @@ body {
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
+}
+
+/* Hero opening scene only — a much slower, gentler breath than --animate-breathe */
+@keyframes hero-breathe {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.68; transform: scale(1.015); }
+}
+
+@keyframes hero-grain-drift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-1.5%, 1%, 0); }
 }
 
 /* ==========================================================

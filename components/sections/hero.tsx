@@ -1,20 +1,19 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { AmbientBackground } from "@/components/effects/ambient-background";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
+import { HeroAtmosphere } from "@/components/sections/hero-atmosphere";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Container } from "@/components/ui/container";
 import { HeroDashboard } from "@/components/sections/hero-dashboard";
-import {
-  staggerContainer,
-  revealUp,
-  EASE_SIGNATURE,
-  SPRING_HEAVY,
-  SPRING_MEDIUM,
-  SPRING_LIGHT,
-} from "@/lib/motion";
+import { EASE_SIGNATURE, SPRING_HEAVY, SPRING_LIGHT } from "@/lib/motion";
 import { useScrollDrift } from "@/lib/parallax";
 
 const TRUST = [
@@ -24,82 +23,78 @@ const TRUST = [
   { value: "4.9/5", label: "valoración media" },
 ];
 
+// The opening sequence: light first, then the message wakes up one line at
+// a time. Slower and quieter than a normal section reveal — this is the
+// only scene in the product that gets to take its time.
+const WAKE = {
+  eyebrow: 1.0,
+  headline: 1.2,
+  subhead: 1.55,
+  ctas: 1.8,
+  trust: 2.0,
+  panel: 2.3,
+};
+
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
 
-  // Depth layers separate by weight: the dashboard is heaviest (lags most),
-  // text is medium, tiny particles are lightest and react fastest.
-  const visualY = useScrollDrift(scrollYProgress, [0, 110], SPRING_HEAVY);
-  const textY = useScrollDrift(scrollYProgress, [0, 40], SPRING_MEDIUM);
-  const particleY = useScrollDrift(scrollYProgress, [0, -60], SPRING_LIGHT);
-  const ringY = useScrollDrift(scrollYProgress, [0, 70], SPRING_HEAVY);
+  const textY = useScrollDrift(scrollYProgress, [0, 30], SPRING_LIGHT);
+  const panelY = useScrollDrift(scrollYProgress, [0, 100], SPRING_HEAVY);
   const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  // The floating panel answers to the cursor — the control-center feels
+  // aware of you, not the other way around. Kept tiny and slow on purpose.
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const tiltX = useSpring(useTransform(my, [-0.5, 0.5], [3, -3]), SPRING_HEAVY);
+  const tiltY = useSpring(useTransform(mx, [-0.5, 0.5], [-3, 3]), SPRING_HEAVY);
+
+  function handlePointerMove(e: React.MouseEvent<HTMLElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mx.set((e.clientX - rect.left) / rect.width - 0.5);
+    my.set((e.clientY - rect.top) / rect.height - 0.5);
+  }
 
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[100svh] items-center pt-36 pb-24 md:pt-44 md:pb-16"
+      onMouseMove={handlePointerMove}
+      className="relative flex min-h-[100svh] items-center overflow-hidden pt-32 pb-24 md:pt-36 md:pb-20"
     >
-      <AmbientBackground variant="hero" />
+      <HeroAtmosphere />
 
-      {/* floating abstract elements — Layer 03 */}
+      {/* a few slow particles — the only continuous motion besides the light itself */}
       <div aria-hidden className="pointer-events-none absolute inset-0 hidden md:block">
-        <motion.div
-          className="animate-drift absolute left-[2.5%] top-[16%] size-2 rounded-full bg-accent-400/50 blur-[1px]"
-          style={{ y: particleY }}
+        <motion.span
+          className="animate-drift-slow absolute left-[6%] top-[22%] size-1.5 rounded-full bg-accent-400/40 blur-[1px]"
+          style={{ y: textY }}
         />
-        <motion.div
-          className="animate-drift-slow absolute left-[1.5%] bottom-[14%] size-1.5 rounded-full bg-accent-300/40 blur-[1px]"
-          style={{ y: particleY }}
+        <motion.span
+          className="animate-drift absolute left-[12%] bottom-[30%] size-1 rounded-full bg-accent-300/30 blur-[1px]"
+          style={{ y: textY }}
         />
-        <motion.svg
-          className="animate-drift-slow absolute right-[6%] bottom-[10%] opacity-[0.55]"
-          style={{ y: ringY }}
-          width="140"
-          height="120"
-          viewBox="0 0 140 120"
-          fill="none"
-        >
-          <path
-            d="M70 20 L115 100 L25 100 Z"
-            stroke="var(--color-border-strong)"
-            strokeWidth="1"
-          />
-          <motion.path
-            d="M70 20 L115 100 L25 100 Z"
-            stroke="var(--color-accent-400)"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeDasharray="18 256"
-            animate={{ strokeDashoffset: [0, -274] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-          />
-          {[
-            [70, 20],
-            [115, 100],
-            [25, 100],
-          ].map(([cx, cy]) => (
-            <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="3" fill="var(--color-accent-400)" />
-          ))}
-        </motion.svg>
       </div>
 
-      <Container className="relative grid grid-cols-1 items-center gap-20 lg:grid-cols-[1fr_0.92fr] lg:gap-6">
+      <Container className="relative">
+        {/* the message — full width, nothing shares this space with it */}
         <motion.div
           style={{ y: textY, opacity: fade }}
-          variants={staggerContainer(0.12, 0.1)}
-          initial="hidden"
-          animate="visible"
-          className="flex flex-col items-start gap-8"
+          className="flex flex-col items-start gap-7"
         >
-          <motion.div variants={revealUp()}>
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: WAKE.eyebrow, ease: EASE_SIGNATURE }}
+          >
             <Eyebrow>Para clínicas y centros de bienestar</Eyebrow>
           </motion.div>
 
           <motion.h1
-            variants={revealUp()}
-            className="font-display max-w-[13ch] text-[50px] font-normal leading-[0.98] tracking-[-0.015em] text-fg sm:text-[68px] lg:text-[76px] xl:text-[88px]"
+            initial={{ opacity: 0, y: 26, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 1.3, delay: WAKE.headline, ease: EASE_SIGNATURE }}
+            className="font-display text-[46px] font-normal leading-[0.98] tracking-[-0.015em] text-fg sm:text-[64px] lg:text-[84px] xl:text-[100px]"
           >
             El sistema que{" "}
             <span className="text-gradient-accent font-normal italic">
@@ -109,15 +104,22 @@ export function Hero() {
           </motion.h1>
 
           <motion.p
-            variants={revealUp()}
-            className="max-w-[40ch] text-[17px] leading-[1.75] text-fg-muted lg:text-[18px]"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: WAKE.subhead, ease: EASE_SIGNATURE }}
+            className="max-w-[50ch] text-[17px] leading-[1.75] text-fg-muted lg:text-[19px]"
           >
             Visibilidad local, automatización de reservas y reputación digital,
             combinadas en un solo sistema que trabaja mientras usted atiende a sus
             pacientes.
           </motion.p>
 
-          <motion.div variants={revealUp()} className="mt-2 flex flex-wrap items-center gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: WAKE.ctas, ease: EASE_SIGNATURE }}
+            className="mt-2 flex flex-wrap items-center gap-4"
+          >
             <Button href="/contacto" size="lg" icon>
               Reservar mi auditoría
             </Button>
@@ -127,8 +129,10 @@ export function Hero() {
           </motion.div>
 
           <motion.div
-            variants={revealUp()}
-            className="mt-6 grid w-full grid-cols-2 gap-x-8 gap-y-5 border-t border-border pt-7 sm:grid-cols-4"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: WAKE.trust, ease: EASE_SIGNATURE }}
+            className="mt-4 grid w-full max-w-[560px] grid-cols-2 gap-x-8 gap-y-4 border-t border-border pt-6 sm:grid-cols-4"
           >
             {TRUST.map((t) => (
               <div key={t.label} className="flex flex-col gap-1">
@@ -138,21 +142,25 @@ export function Hero() {
             ))}
           </motion.div>
         </motion.div>
-
-        <motion.div
-          style={{ y: visualY }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, transition: { duration: 1, delay: 0.6, ease: EASE_SIGNATURE } }}
-          className="relative flex justify-center lg:justify-end lg:translate-x-4 xl:translate-x-12 2xl:translate-x-20"
-        >
-          <HeroDashboard />
-        </motion.div>
       </Container>
+
+      {/* the system, glimpsed — a supporting fragment, not a competing focal point */}
+      <motion.div
+        style={{ y: panelY, rotateX: tiltX, rotateY: tiltY, transformPerspective: 1200 }}
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.4, delay: WAKE.panel, ease: EASE_SIGNATURE }}
+        className="pointer-events-none absolute -right-10 bottom-[6%] hidden w-[300px] opacity-90 lg:block xl:right-[-2%] xl:w-[340px]"
+      >
+        <div className="pointer-events-auto">
+          <HeroDashboard />
+        </div>
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { delay: 2, duration: 1 } }}
-        className="absolute inset-x-0 bottom-8 hidden justify-center md:flex"
+        animate={{ opacity: 1, transition: { delay: 2.6, duration: 1.2 } }}
+        className="absolute inset-x-0 bottom-6 hidden justify-center [@media(min-height:820px)]:md:flex"
       >
         <div className="flex flex-col items-center gap-2 text-fg-faint">
           <span className="font-mono text-[10px] uppercase tracking-[0.2em]">Descubra el sistema</span>
@@ -160,7 +168,7 @@ export function Hero() {
             <motion.span
               className="absolute inset-x-0 top-0 h-1/2 bg-accent-400"
               animate={{ y: ["-100%", "200%"] }}
-              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             />
           </span>
         </div>
