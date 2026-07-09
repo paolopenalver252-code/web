@@ -1,0 +1,201 @@
+@import "tailwindcss";
+
+/* ==========================================================
+   POTENARIS DESIGN TOKENS
+   Cold atmosphere. Blue-black depth. One signature light.
+   ========================================================== */
+
+:root {
+  /* Surfaces — never pure black, always carrying blue depth */
+  --color-void: #05070b;
+  --color-surface-950: #070b12;
+  --color-surface-900: #0a0f1a;
+  --color-surface-850: #0d1320;
+  --color-surface-800: #111827;
+  --color-surface-700: #172033;
+  --color-surface-600: #1f2a42;
+  --color-surface-500: #2a3757;
+
+  /* Foreground */
+  --color-fg: #f4f6fa;
+  --color-fg-muted: #a7b0c3;
+  --color-fg-subtle: #8a94b0;
+  --color-fg-faint: #7580a0;
+
+  /* Signature light — soft cyan, the only accent temperature */
+  --color-accent-300: #a6f0f2;
+  --color-accent-400: #7ee3e8;
+  --color-accent-500: #4fd1e0;
+  --color-accent-600: #2ba9c4;
+  --color-accent-700: #1c7f9c;
+
+  /* Borders */
+  --color-border: rgba(244, 246, 250, 0.08);
+  --color-border-strong: rgba(244, 246, 250, 0.14);
+  --color-border-accent: rgba(79, 209, 224, 0.35);
+
+  --shadow-ambient: 0 40px 80px -20px rgba(2, 6, 16, 0.55), 0 2px 8px rgba(2, 6, 16, 0.35);
+  --shadow-elevated: 0 60px 120px -30px rgba(2, 6, 16, 0.65), 0 8px 24px rgba(2, 6, 16, 0.4);
+  --shadow-glow-accent: 0 0 0 1px var(--color-border-accent), 0 0 40px -8px rgba(79, 209, 224, 0.35);
+}
+
+@theme inline {
+  --color-void: var(--color-void);
+  --color-surface-950: var(--color-surface-950);
+  --color-surface-900: var(--color-surface-900);
+  --color-surface-850: var(--color-surface-850);
+  --color-surface-800: var(--color-surface-800);
+  --color-surface-700: var(--color-surface-700);
+  --color-surface-600: var(--color-surface-600);
+  --color-surface-500: var(--color-surface-500);
+
+  --color-fg: var(--color-fg);
+  --color-fg-muted: var(--color-fg-muted);
+  --color-fg-subtle: var(--color-fg-subtle);
+  --color-fg-faint: var(--color-fg-faint);
+
+  --color-accent-300: var(--color-accent-300);
+  --color-accent-400: var(--color-accent-400);
+  --color-accent-500: var(--color-accent-500);
+  --color-accent-600: var(--color-accent-600);
+  --color-accent-700: var(--color-accent-700);
+
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-border-accent: var(--color-border-accent);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
+
+  --animate-drift: drift 26s ease-in-out infinite;
+  --animate-drift-slow: drift 42s ease-in-out infinite;
+  --animate-breathe: breathe 7s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 5s ease-in-out infinite;
+  --animate-marquee: marquee 34s linear infinite;
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+html {
+  background: var(--color-void);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-void);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01" 1, "cv01" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(79, 209, 224, 0.28);
+  color: var(--color-fg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-400);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Subtle, on-brand scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-void);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-600);
+  border-radius: 999px;
+  border: 2px solid var(--color-void);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-surface-500);
+}
+
+/* ==========================================================
+   AMBIENT LAYERS
+   ========================================================== */
+
+@utility bg-noise {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 180px 180px;
+  }
+}
+
+@utility glass-panel {
+  background: linear-gradient(180deg, rgba(244, 246, 250, 0.06), rgba(244, 246, 250, 0.02));
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid var(--color-border);
+}
+
+@utility glass-nav {
+  background: rgba(7, 11, 18, 0.72);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+}
+
+@utility text-gradient-fg {
+  background: linear-gradient(180deg, var(--color-fg) 0%, var(--color-fg-muted) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@utility text-gradient-accent {
+  background: linear-gradient(120deg, var(--color-accent-300) 0%, var(--color-accent-500) 60%, var(--color-accent-600) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(2%, -3%, 0) scale(1.04); }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.03); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ==========================================================
+   ACCESSIBILITY — reduced motion
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
