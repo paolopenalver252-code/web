@@ -19,9 +19,16 @@ const weeklyBars = [38, 52, 44, 61, 58, 74, 68];
  * headline. Hero-only; not reused elsewhere, so free to stay this specific.
  *
  * Depth model: the reservations module is nearest (sharpest, largest,
- * heaviest scroll parallax, biggest cursor response). The visibility module
- * sits a step back (slightly smaller, softer shadow, lighter parallax). The
- * notification is a near, fast, transient signal — small and quick.
+ * heaviest scroll parallax and cursor response, most perspective tilt). The
+ * visibility module sits a step back (slightly smaller, softer shadow,
+ * lighter parallax, a touch of depth-of-field blur). The notification is a
+ * near, fast, transient signal — small and quick.
+ *
+ * Each panel's continuous idle float lives on an inner element, never the
+ * same one carrying the scroll/cursor `style` transform — a CSS `animation`
+ * targeting `transform` wins the cascade over an inline style on that same
+ * element, so the two have to be layered on separate nodes or one silently
+ * cancels the other.
  */
 export function HeroSystem() {
   const { ref, progress } = useScene<HTMLDivElement>();
@@ -29,6 +36,13 @@ export function HeroSystem() {
   const reservationsY = useLayer(progress, 26, SPRING_HEAVY);
   const visibilityY = useLayer(progress, 14, SPRING_MEDIUM);
   const notifY = useLayer(progress, 10, SPRING_LIGHT);
+
+  // The camera tilts very slightly as it moves through the cluster — nearer
+  // panels answer more, exactly like the cursor weighting below.
+  const tiltNear = useSpring(useTransform(progress, [0, 1], [0, -5]), SPRING_HEAVY);
+  const tiltFar = useSpring(useTransform(progress, [0, 1], [0, -2.5]), SPRING_MEDIUM);
+  const farBlur = useSpring(useTransform(progress, [0, 1], [0, 0.6]), SPRING_MEDIUM);
+  const farBlurFilter = useTransform(farBlur, (v) => `blur(${v}px)`);
 
   // Cursor presence — one shared reading, weighted differently per module
   // so the nearest panel answers most and the farthest barely moves.
@@ -64,6 +78,7 @@ export function HeroSystem() {
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
       className="relative h-[340px] w-[300px] xl:h-[380px] xl:w-[340px]"
+      style={{ perspective: 1000 }}
     >
       {/* the network — thin lines connecting every module, signal moving along them */}
       <svg
@@ -88,46 +103,54 @@ export function HeroSystem() {
 
       {/* module 01 — reservations, nearest, the anchor of the cluster */}
       <motion.div
-        style={{ y: reservationsY, x: near.x, translateY: near.y }}
+        style={{
+          y: reservationsY,
+          x: near.x,
+          translateY: near.y,
+          rotateX: tiltNear,
+          transformPerspective: 800,
+        }}
         initial={{ opacity: 0, y: 26, filter: "blur(10px)" }}
         animate={{ opacity: 1, filter: "blur(0px)" }}
         transition={{ duration: 1.1, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
-        className="animate-float-a absolute left-0 top-10 z-30 w-[220px]"
+        className="absolute left-0 top-10 z-30 w-[220px]"
       >
-        <div className="glass-panel bg-noise rounded-[22px] p-4 shadow-[var(--shadow-elevated)]">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-fg-faint">
-                Sistema de reservas
-              </p>
-              <p className="mt-1 font-display text-[15px] text-fg">Clínica Vitalis</p>
+        <div className="animate-float-a">
+          <div className="glass-panel bg-noise rounded-[22px] p-4 shadow-[var(--shadow-elevated)]">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-fg-faint">
+                  Sistema de reservas
+                </p>
+                <p className="mt-1 font-display text-[15px] text-fg">Clínica Vitalis</p>
+              </div>
+              <span className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-border px-2 py-1 font-mono text-[8.5px] uppercase tracking-[0.1em] text-accent-400">
+                <LiveDot />
+                En vivo
+              </span>
             </div>
-            <span className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-border px-2 py-1 font-mono text-[8.5px] uppercase tracking-[0.1em] text-accent-400">
-              <LiveDot />
-              En vivo
-            </span>
-          </div>
 
-          <div className="mt-4 flex items-end justify-between rounded-2xl border border-border bg-surface-900/60 p-3">
-            <div>
-              <p className="text-[20px] font-medium leading-none text-fg">128</p>
-              <p className="mt-1.5 text-[10.5px] text-fg-muted">reservas / semana</p>
-              <p className="mt-1.5 inline-flex items-center gap-1 font-mono text-[10px] text-accent-400">
-                <TrendingUp className="size-2.5" /> +24%
-              </p>
-            </div>
-            <div className="flex h-[42px] items-end gap-1">
-              {weeklyBars.map((h, i) => (
-                <motion.span
-                  key={i}
-                  initial={{ height: 0 }}
-                  animate={{ height: `${h}%` }}
-                  transition={{ duration: 0.8, delay: 1.4 + i * 0.05, ease: [0.16, 1, 0.3, 1] }}
-                  className={`w-[5px] rounded-full ${
-                    i === weeklyBars.length - 1 ? "bg-accent-400" : "bg-surface-600"
-                  }`}
-                />
-              ))}
+            <div className="mt-4 flex items-end justify-between rounded-2xl border border-border bg-surface-900/60 p-3">
+              <div>
+                <p className="text-[20px] font-medium leading-none text-fg">128</p>
+                <p className="mt-1.5 text-[10.5px] text-fg-muted">reservas / semana</p>
+                <p className="mt-1.5 inline-flex items-center gap-1 font-mono text-[10px] text-accent-400">
+                  <TrendingUp className="size-2.5" /> +24%
+                </p>
+              </div>
+              <div className="flex h-[42px] items-end gap-1">
+                {weeklyBars.map((h, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ height: 0 }}
+                    animate={{ height: `${h}%` }}
+                    transition={{ duration: 0.8, delay: 1.4 + i * 0.05, ease: [0.16, 1, 0.3, 1] }}
+                    className={`w-[5px] rounded-full ${
+                      i === weeklyBars.length - 1 ? "bg-accent-400" : "bg-surface-600"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -135,29 +158,38 @@ export function HeroSystem() {
 
       {/* module 02 — local visibility, a step further back */}
       <motion.div
-        style={{ y: visibilityY, x: far.x, translateY: far.y }}
+        style={{
+          y: visibilityY,
+          x: far.x,
+          translateY: far.y,
+          rotateX: tiltFar,
+          filter: farBlurFilter,
+          transformPerspective: 800,
+        }}
         initial={{ opacity: 0, y: 22 }}
         animate={{ opacity: 0.94 }}
         transition={{ duration: 1.1, delay: 1.5, ease: [0.16, 1, 0.3, 1] }}
-        className="animate-float-b absolute left-[100px] top-[204px] z-20 w-[210px]"
+        className="absolute left-[100px] top-[204px] z-20 w-[210px]"
       >
-        <div className="glass-panel rounded-[20px] p-3.5 shadow-[var(--shadow-ambient)]">
-          <div className="flex items-center gap-2.5">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent-500/15 text-accent-400">
-              <MapPin className="size-3.5" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center justify-between gap-2">
-                <p className="truncate text-[11px] text-fg-muted">Visibilidad local</p>
-                <p className="font-mono text-[10.5px] text-fg">92/100</p>
-              </div>
-              <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-surface-700">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: "92%" }}
-                  transition={{ duration: 1.2, delay: 1.9, ease: [0.16, 1, 0.3, 1] }}
-                  className="h-full rounded-full bg-gradient-to-r from-accent-600 to-accent-400"
-                />
+        <div className="animate-float-b [animation-delay:-4s]">
+          <div className="glass-panel rounded-[20px] p-3.5 shadow-[var(--shadow-ambient)]">
+            <div className="flex items-center gap-2.5">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent-500/15 text-accent-400">
+                <MapPin className="size-3.5" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="truncate text-[11px] text-fg-muted">Visibilidad local</p>
+                  <p className="font-mono text-[10.5px] text-fg">92/100</p>
+                </div>
+                <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-surface-700">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: "92%" }}
+                    transition={{ duration: 1.2, delay: 1.9, ease: [0.16, 1, 0.3, 1] }}
+                    className="h-full rounded-full bg-gradient-to-r from-accent-600 to-accent-400"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -170,15 +202,17 @@ export function HeroSystem() {
         initial={{ opacity: 0, y: 14, scale: 0.94 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="animate-float-c absolute right-0 top-0 z-40 w-[216px]"
+        className="absolute right-0 top-0 z-40 w-[216px]"
       >
-        <div className="glass-panel flex items-center gap-2.5 rounded-2xl px-3.5 py-2.5 shadow-[var(--shadow-elevated)]">
-          <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-accent-500/15 text-accent-400">
-            <CalendarCheck className="size-3.5" />
-          </span>
-          <div className="min-w-0 leading-tight">
-            <p className="text-[11px] font-medium text-fg">Nueva reserva confirmada</p>
-            <p className="font-mono text-[9.5px] text-fg-faint">Automatizada · hace 2 min</p>
+        <div className="animate-float-c [animation-delay:-2.5s]">
+          <div className="glass-panel flex items-center gap-2.5 rounded-2xl px-3.5 py-2.5 shadow-[var(--shadow-elevated)]">
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-accent-500/15 text-accent-400">
+              <CalendarCheck className="size-3.5" />
+            </span>
+            <div className="min-w-0 leading-tight">
+              <p className="text-[11px] font-medium text-fg">Nueva reserva confirmada</p>
+              <p className="font-mono text-[9.5px] text-fg-faint">Automatizada · hace 2 min</p>
+            </div>
           </div>
         </div>
       </motion.div>

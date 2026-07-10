@@ -1,13 +1,30 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useSpring, useTransform, type MotionValue } from "framer-motion";
+import { SPRING_HEAVY } from "@/lib/motion";
 
 /**
  * The opening scene's environment — built only for the Hero, never shared.
  * The system is not loading. It is waking up: darkness first, then a slow
  * breath of light before anything else is allowed to appear.
+ *
+ * When `progress` (scroll through the Hero, 0→1) is supplied, the light
+ * itself answers to the camera moving through it — brightening slightly as
+ * the system "activates" — layered on top of its own constant, time-based
+ * breathing. The two live on separate nested elements on purpose: a CSS
+ * `animation` targeting `transform`/`opacity` wins the cascade over an
+ * inline style on the same element, so the scroll-driven motion value goes
+ * on the outer wrapper and the CSS breathing keyframe on an inner one.
  */
-export function HeroAtmosphere() {
+export function HeroAtmosphere({ progress }: { progress?: MotionValue<number> }) {
+  const fallback = useSpring(0);
+  const p = progress ?? fallback;
+
+  // Activation: the light gently gains presence through the first half of
+  // the scroll, then settles — never a flash, just a slow gain.
+  const lightGain = useSpring(useTransform(p, [0, 0.5, 1], [1, 1.2, 1.08]), SPRING_HEAVY);
+  const sceneScale = useSpring(useTransform(p, [0, 1], [1, 1.06]), SPRING_HEAVY);
+
   return (
     <motion.div
       aria-hidden
@@ -17,20 +34,29 @@ export function HeroAtmosphere() {
       transition={{ duration: 2.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* primary light source — large, slow, barely there */}
-      <div
-        className="animate-hero-breathe absolute left-1/2 top-[-30%] h-[85vw] w-[85vw] max-h-[1100px] max-w-[1100px] -translate-x-1/2 rounded-full blur-[160px]"
-        style={{
-          background: "radial-gradient(circle, rgba(79,209,224,0.85) 0%, rgba(79,209,224,0) 68%)",
-        }}
-      />
+      <motion.div
+        style={{ opacity: lightGain, scale: sceneScale }}
+        className="absolute left-1/2 top-[-30%] h-[85vw] w-[85vw] max-h-[1100px] max-w-[1100px] -translate-x-1/2"
+      >
+        <div
+          className="animate-hero-breathe size-full rounded-full blur-[160px]"
+          style={{
+            background: "radial-gradient(circle, rgba(79,209,224,0.85) 0%, rgba(79,209,224,0) 68%)",
+          }}
+        />
+      </motion.div>
       {/* secondary source, offset phase, so the light never feels like one pulse */}
-      <div
-        className="animate-hero-breathe-slow absolute right-[-15%] bottom-[-25%] h-[60vw] w-[60vw] max-h-[760px] max-w-[760px] rounded-full blur-[140px]"
-        style={{
-          background: "radial-gradient(circle, rgba(79,209,224,0.7) 0%, rgba(79,209,224,0) 70%)",
-          animationDelay: "-7s",
-        }}
-      />
+      <motion.div
+        style={{ opacity: lightGain, scale: sceneScale }}
+        className="absolute right-[-15%] bottom-[-25%] h-[60vw] w-[60vw] max-h-[760px] max-w-[760px]"
+      >
+        <div
+          className="animate-hero-breathe-slow size-full rounded-full blur-[140px] [animation-delay:-7s]"
+          style={{
+            background: "radial-gradient(circle, rgba(79,209,224,0.7) 0%, rgba(79,209,224,0) 70%)",
+          }}
+        />
+      </motion.div>
 
       {/* depth wash — keeps the upper scene darker, so light reads as emerging */}
       <div
@@ -53,6 +79,13 @@ export function HeroAtmosphere() {
       <div className="animate-hero-grain absolute inset-[-10%] opacity-[0.05] mix-blend-overlay">
         <div className="bg-noise absolute inset-0" />
       </div>
+
+      {/* seal — guarantees the very bottom edge reaches the exact void
+          color, so the next section never meets a visible brightness step */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-40"
+        style={{ background: "linear-gradient(180deg, transparent 0%, var(--color-void) 100%)" }}
+      />
     </motion.div>
   );
 }

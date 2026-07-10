@@ -1,13 +1,13 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { HeroAtmosphere } from "@/components/sections/hero-atmosphere";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Container } from "@/components/ui/container";
 import { HeroSystem } from "@/components/sections/hero-system";
-import { EASE_SIGNATURE, SPRING_LIGHT } from "@/lib/motion";
+import { EASE_SIGNATURE, SPRING_LIGHT, SPRING_HEAVY } from "@/lib/motion";
 import { useScrollDrift } from "@/lib/parallax";
 
 const TRUST = [
@@ -35,12 +35,29 @@ export function Hero() {
   const textY = useScrollDrift(scrollYProgress, [0, 30], SPRING_LIGHT);
   const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
+  // The camera push: on the very first scroll, the scene advances toward
+  // the visitor almost imperceptibly — pulled in, not scrolled past.
+  const cameraPush = useSpring(useTransform(scrollYProgress, [0, 0.15], [1, 1.018]), SPRING_HEAVY);
+
+  // The exit: content softens and dissolves well before the section's own
+  // edge, so nothing is ever clipped mid-shape — by the time the viewport
+  // reaches the next section, the Hero has already receded into the shared
+  // atmosphere rather than being cut off.
+  const exitBlur = useSpring(useTransform(scrollYProgress, [0.45, 0.8], [0, 10]), SPRING_HEAVY);
+  const exitFilter = useTransform(exitBlur, (v) => `blur(${v}px)`);
+
+  // The scene never cuts to the next one — it opens into it. The bottom
+  // glow grows as the camera approaches the edge of the Hero, so by the
+  // time Problem's own content begins, the light is already continuous.
+  const cueOpacity = useSpring(useTransform(scrollYProgress, [0, 1], [0.55, 1]), SPRING_HEAVY);
+  const cueHeight = useSpring(useTransform(scrollYProgress, [0, 1], [176, 340]), SPRING_HEAVY);
+
   return (
     <section
       ref={ref}
       className="relative flex min-h-[100svh] items-center overflow-hidden pt-40 pb-32 md:pt-48 md:pb-24"
     >
-      <HeroAtmosphere />
+      <HeroAtmosphere progress={scrollYProgress} />
 
       {/* a couple of slow particles — the only continuous motion besides the light */}
       <div aria-hidden className="pointer-events-none absolute inset-0 hidden md:block">
@@ -54,7 +71,10 @@ export function Hero() {
       </div>
 
       <Container className="relative">
-        <motion.div style={{ y: textY, opacity: fade }} className="flex flex-col">
+        <motion.div
+          style={{ y: textY, opacity: fade, scale: cameraPush, filter: exitFilter }}
+          className="flex flex-col"
+        >
           {/* the headline — undivided, full width, nothing else shares this space */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -136,18 +156,21 @@ export function Hero() {
         </motion.div>
       </Container>
 
-      {/* continuation cue — a breathing light at the edge, never an icon */}
+      {/* continuation cue — the light grows toward the edge as the camera
+          approaches it, so the next scene opens rather than cuts in */}
       <motion.div
         aria-hidden
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.6, delay: 2.8 }}
-        className="animate-hero-breathe pointer-events-none absolute inset-x-0 bottom-0 h-44"
-        style={{
-          background:
-            "linear-gradient(0deg, rgba(79,209,224,0.09) 0%, rgba(79,209,224,0) 100%)",
-        }}
-      />
+        style={{ opacity: cueOpacity, height: cueHeight }}
+        className="pointer-events-none absolute inset-x-0 bottom-0"
+      >
+        <div
+          className="animate-hero-breathe size-full"
+          style={{
+            background:
+              "linear-gradient(0deg, transparent 0%, rgba(79,209,224,0.12) 45%, transparent 100%)",
+          }}
+        />
+      </motion.div>
     </section>
   );
 }
