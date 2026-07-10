@@ -1,3 +1,4 @@
+import { CinematicOpening } from "@/components/sections/cinematic-opening";
 import { Hero } from "@/components/sections/hero";
 import { Problem } from "@/components/sections/problem";
 import { ValueLadder } from "@/components/sections/value-ladder";
@@ -9,6 +10,7 @@ import { FinalCta } from "@/components/sections/final-cta";
 export default function Home() {
   return (
     <>
+      <CinematicOpening />
       <Hero />
       <Problem />
       <ValueLadder />
