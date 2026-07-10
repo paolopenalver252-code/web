@@ -31,7 +31,7 @@ export function Trust() {
       <Container className="flex flex-col gap-24 md:gap-32">
         <SectionHeading
           layout="split"
-          size="lg"
+          size="md"
           eyebrow="Por qué funciona"
           title="Especializados en un solo sector. Nunca dispersos."
           description="No trabajamos con restaurantes, inmobiliarias ni comercio electrónico. Solo con centros de bienestar, clínicas privadas y profesionales de la salud — y esa especialización es, precisamente, la razón por la que el sistema funciona."
@@ -62,7 +62,7 @@ export function Trust() {
           viewport={viewportOnce}
           className="relative flex flex-col gap-8 lg:ml-[18%] lg:mt-8"
         >
-          <p className="font-display max-w-[26ch] text-[32px] font-normal italic leading-[1.2] text-fg sm:text-[40px] md:text-[50px]">
+          <p className="font-display max-w-[24ch] text-[34px] font-normal italic leading-[1.15] text-fg sm:text-[46px] md:text-[60px] lg:text-[68px]">
             Un sistema de crecimiento no promete magia. Promete claridad: qué
             está funcionando, qué no, y qué hacer a continuación.
           </p>
