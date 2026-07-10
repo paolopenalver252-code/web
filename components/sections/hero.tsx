@@ -6,7 +6,7 @@ import { HeroAtmosphere } from "@/components/sections/hero-atmosphere";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Container } from "@/components/ui/container";
-import { HeroDashboard } from "@/components/sections/hero-dashboard";
+import { HeroSystem } from "@/components/sections/hero-system";
 import { EASE_SIGNATURE, SPRING_LIGHT } from "@/lib/motion";
 import { useScrollDrift } from "@/lib/parallax";
 
@@ -26,7 +26,6 @@ const WAKE = {
   deck: 1.7,
   ctas: 1.9,
   trust: 2.1,
-  panel: 2.3,
 };
 
 export function Hero() {
@@ -129,21 +128,10 @@ export function Hero() {
               </motion.div>
             </div>
 
-            {/* the system, glimpsed — framed by space, not overlapping anything */}
-            <motion.div
-              initial={{ opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.3, delay: WAKE.panel, ease: EASE_SIGNATURE }}
-              className="hidden lg:flex lg:justify-end"
-            >
-              <div className="relative pl-8">
-                <span
-                  aria-hidden
-                  className="absolute left-0 top-1 h-[calc(100%-8px)] w-px bg-gradient-to-b from-border via-border to-transparent"
-                />
-                <HeroDashboard />
-              </div>
-            </motion.div>
+            {/* the system, glimpsed — a living cluster, framed by space */}
+            <div className="hidden lg:flex lg:justify-end">
+              <HeroSystem />
+            </div>
           </div>
         </motion.div>
       </Container>

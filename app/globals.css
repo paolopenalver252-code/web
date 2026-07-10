@@ -76,6 +76,9 @@
   --animate-hero-breathe: hero-breathe 13s ease-in-out infinite;
   --animate-hero-breathe-slow: hero-breathe 19s ease-in-out infinite;
   --animate-hero-grain: hero-grain-drift 24s ease-in-out infinite;
+  --animate-float-a: float-a 9s ease-in-out infinite;
+  --animate-float-b: float-b 12s ease-in-out infinite;
+  --animate-float-c: float-c 7.5s ease-in-out infinite;
 }
 
 * {
@@ -198,6 +201,21 @@ body {
 @keyframes hero-grain-drift {
   0%, 100% { transform: translate3d(0, 0, 0); }
   50% { transform: translate3d(-1.5%, 1%, 0); }
+}
+
+/* Independent idle float for the Hero's system modules — each panel gets
+   its own period/amplitude so the cluster never moves as one flat plane. */
+@keyframes float-a {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -7px, 0); }
+}
+@keyframes float-b {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -4px, 0); }
+}
+@keyframes float-c {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -3px, 0); }
 }
 
 /* ==========================================================
